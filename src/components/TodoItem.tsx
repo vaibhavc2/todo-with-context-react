@@ -14,9 +14,9 @@ function TodoItem({ todo }: { todo: TodoType }) {
 
   return (
     <div
-      className={`flex gap-x-3 rounded-lg border border-black/10 px-3 py-1.5 text-black shadow-sm shadow-white/50  duration-300 ${
+      className={`flex gap-x-3 rounded-lg border border-black/10 px-3 py-1.5 text-black accent-blue-700 shadow-sm shadow-white/50 duration-300 ${
         todo.isCompleted
-          ? "bg-[#6a7e58] text-[#303030] opacity-50"
+          ? "bg-[#c9c9c8] text-[#303030] opacity-40"
           : "bg-[#ccbed7]"
       }`}
     >
