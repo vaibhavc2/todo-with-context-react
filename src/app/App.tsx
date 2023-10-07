@@ -3,9 +3,12 @@ import { TodoObjectType, TodoType } from "../types";
 import { TodoProvider } from "../context";
 import { v4 as uuidv4 } from "uuid";
 import { TodoPage } from "./pages";
+import UndoDelete from "../components/UndoDelete";
 
 const App = () => {
   const [todos, setTodos] = useState<Array<TodoType>>([]);
+  const [deletedTodos, setDeletedTodos] = useState<Array<TodoType>>([]);
+  const [isDeleted, setIsDeleted] = useState<boolean>(false);
 
   const addTodo = useCallback(
     (todoMessage: string) => {
@@ -14,12 +17,11 @@ const App = () => {
         todoMessage,
         isCompleted: false
       };
-
       setTodos((prev) => {
         return [latestTodo, ...prev];
       });
     },
-    [todos, setTodos]
+    [todos, setTodos, uuidv4]
   );
 
   const updateTodo = useCallback(
@@ -35,27 +37,21 @@ const App = () => {
 
   const deleteTodo = useCallback(
     (id: string) => {
-      // setTodos((prev) => {
-      // const todoIndex = prev.findIndex((todo) => todo.id === id);
-      // prev = prev.splice(todoIndex, 1);
-      // return [...prev];
-      // });
-
-      // better method:
+      setDeletedTodos(todos);
       setTodos((prev) => prev.filter((todo) => todo.id !== id));
+      setIsDeleted(true);
     },
-    [todos, setTodos]
+    [todos, setTodos, deletedTodos, setDeletedTodos]
   );
+
+  const undoDeletedTodo = useCallback(() => {
+    setTodos(deletedTodos);
+    setDeletedTodos({} as Array<TodoType>);
+    setIsDeleted(false);
+  }, [setTodos, setDeletedTodos, setIsDeleted, deletedTodos]);
 
   const toggleCompletion = useCallback(
     (id: string) => {
-      // setTodos((prev) => {
-      //   const todo = prev.find((todo) => todo.id === id);
-      //   if (todo?.isCompleted) todo.isCompleted = !todo.isCompleted;
-      //   return [...prev];
-      // });
-
-      // another way:
       setTodos((prev) =>
         prev.map((todo) =>
           todo.id === id ? { ...todo, isCompleted: !todo.isCompleted } : todo
@@ -85,9 +81,19 @@ const App = () => {
 
   return (
     <TodoProvider
-      value={{ todos, addTodo, updateTodo, deleteTodo, toggleCompletion }}
+      value={{
+        todos,
+        isDeleted,
+        setIsDeleted,
+        undoDeletedTodo,
+        addTodo,
+        updateTodo,
+        deleteTodo,
+        toggleCompletion
+      }}
     >
       <TodoPage />
+      <UndoDelete />
     </TodoProvider>
   );
 };

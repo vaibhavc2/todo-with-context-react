@@ -3,7 +3,7 @@ import { useTodo } from "../context";
 import { TodoType } from "../types";
 
 function TodoItem({ todo }: { todo: TodoType }) {
-  const { deleteTodo, updateTodo, toggleCompletion } = useTodo();
+  const { deleteTodo, updateTodo, toggleCompletion, isDeleted } = useTodo();
   const [todoMessage, setTodoMessage] = useState(todo.todoMessage);
   const [isTodoEditable, setIsTodoEditable] = useState(false);
 
@@ -56,8 +56,11 @@ function TodoItem({ todo }: { todo: TodoType }) {
       {/* Delete Todo Button */}
       <button
         type="button"
-        className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-black/10 bg-gray-50 text-sm hover:bg-gray-100"
+        className={`inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-black/10 bg-gray-50 text-sm hover:bg-gray-100 ${
+          isDeleted ? "opacity-25" : ""
+        }`}
         onClick={() => deleteTodo(todo.id)}
+        disabled={isDeleted}
       >
         ❌
       </button>
