@@ -45,16 +45,16 @@ const UndoDelete = () => {
           isDeleted ? "visible" : "invisible"
         }`}
       >
-        <div className="mx-auto flex max-w-2xl justify-around">
+        <div className="mx-auto flex max-w-full justify-around">
           <div
-            className="flex items-center rounded-full bg-red-900 p-2 leading-none text-indigo-100 backdrop-blur-3xl lg:inline-flex"
+            className="flex items-center rounded-full bg-red-900 p-2 leading-none text-indigo-100 backdrop-blur-3xl  lg:inline-flex"
             role="alert"
           >
-            <span className="mr-3 flex rounded-full bg-red-500 px-2 py-1 text-xs font-bold uppercase">
+            <span className="mr-3 flex rounded-full bg-red-500 px-2 py-1 text-base font-bold uppercase">
               !!!
             </span>
             <span className="mr-2 flex-auto text-left font-semibold">
-              The Todo was Deleted
+              Deletion Performed
             </span>
             <svg
               className="h-4 w-4 fill-current opacity-75"

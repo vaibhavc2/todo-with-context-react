@@ -1,9 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTodo } from "../context";
+
+const initialInputValue: string = JSON.parse(
+  localStorage.getItem("inp") as string
+);
 
 function TodoForm() {
   const { addTodo } = useTodo();
-  const [todoMessage, setTodoMessage] = useState("");
+  const [todoMessage, setTodoMessage] = useState(initialInputValue);
+
+  useEffect(() => {
+    localStorage.setItem("inp", JSON.stringify(todoMessage));
+  }, [todoMessage]);
 
   return (
     <form
