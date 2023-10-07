@@ -6,6 +6,7 @@ import { TodoPage } from "./pages";
 
 const App = () => {
   const [todos, setTodos] = useState<Array<TodoType>>([]);
+
   const addTodo = useCallback(
     (todoMessage: string) => {
       const latestTodo: TodoType = {
@@ -15,7 +16,7 @@ const App = () => {
       };
 
       setTodos((prev) => {
-        return [...prev, latestTodo];
+        return [latestTodo, ...prev];
       });
     },
     [todos, setTodos]
