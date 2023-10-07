@@ -1,48 +1,64 @@
-// function TodoItem({ todo }) {
-//   return (
-//     <div
-//       className={`flex gap-x-3 rounded-lg border border-black/10 px-3 py-1.5 text-black shadow-sm shadow-white/50  duration-300 ${
-//         todo.completed ? "bg-[#c6e9a7]" : "bg-[#ccbed7]"
-//       }`}
-//     >
-//       <input
-//         type="checkbox"
-//         className="cursor-pointer"
-//         checked={todo.completed}
-//         onChange={toggleCompleted}
-//       />
-//       <input
-//         type="text"
-//         className={`w-full rounded-lg border bg-transparent outline-none ${
-//           isTodoEditable ? "border-black/10 px-2" : "border-transparent"
-//         } ${todo.completed ? "line-through" : ""}`}
-//         value={todoMsg}
-//         onChange={(e) => setTodoMsg(e.target.value)}
-//         readOnly={!isTodoEditable}
-//       />
-//       {/* Edit, Save Button */}
-//       <button
-//         className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-black/10 bg-gray-50 text-sm hover:bg-gray-100 disabled:opacity-50"
-//         onClick={() => {
-//           if (todo.completed) return;
+import { useCallback, useState } from "react";
+import { useTodo } from "../context";
+import { TodoType } from "../types";
 
-//           if (isTodoEditable) {
-//             editTodo();
-//           } else setIsTodoEditable((prev) => !prev);
-//         }}
-//         disabled={todo.completed}
-//       >
-//         {isTodoEditable ? "📁" : "✏️"}
-//       </button>
-//       {/* Delete Todo Button */}
-//       <button
-//         className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-black/10 bg-gray-50 text-sm hover:bg-gray-100"
-//         onClick={() => deleteTodo(todo.id)}
-//       >
-//         ❌
-//       </button>
-//     </div>
-//   );
-// }
+function TodoItem({ todo }: { todo: TodoType }) {
+  const { deleteTodo, updateTodo, toggleCompletion } = useTodo();
+  const [todoMessage, setTodoMessage] = useState(todo.todoMessage);
+  const [isTodoEditable, setIsTodoEditable] = useState(false);
 
-// export default TodoItem;
+  const editTodo = useCallback(() => {
+    updateTodo(todo.id, todoMessage);
+    setIsTodoEditable(false);
+  }, [todoMessage, setTodoMessage, setIsTodoEditable, isTodoEditable]);
+
+  return (
+    <div
+      className={`flex gap-x-3 rounded-lg border border-black/10 px-3 py-1.5 text-black shadow-sm shadow-white/50  duration-300 ${
+        todo.isCompleted
+          ? "bg-[#6a7e58] text-[#303030] opacity-50"
+          : "bg-[#ccbed7]"
+      }`}
+    >
+      <input
+        type="checkbox"
+        className="cursor-pointer"
+        checked={todo.isCompleted}
+        onChange={() => toggleCompletion(todo.id)}
+      />
+      <input
+        type="text"
+        className={`w-full rounded-lg border bg-transparent outline-none ${
+          isTodoEditable ? "border-black/10 px-2" : "border-transparent"
+        } ${todo.isCompleted ? "line-through" : ""}`}
+        value={todoMessage}
+        onChange={(e) => setTodoMessage(e.target.value)}
+        readOnly={!isTodoEditable}
+      />
+      {/* Edit, Save Button */}
+      <button
+        className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-black/10 bg-gray-50 text-sm hover:bg-gray-100 disabled:opacity-50"
+        type="submit"
+        onClick={() => {
+          if (todo.isCompleted) return;
+
+          if (isTodoEditable) {
+            editTodo();
+          } else setIsTodoEditable((prev) => !prev);
+        }}
+        disabled={todo.isCompleted}
+      >
+        {isTodoEditable ? "📁" : "✏️"}
+      </button>
+      {/* Delete Todo Button */}
+      <button
+        className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-black/10 bg-gray-50 text-sm hover:bg-gray-100"
+        onClick={() => deleteTodo(todo.id)}
+      >
+        ❌
+      </button>
+    </div>
+  );
+}
+
+export default TodoItem;

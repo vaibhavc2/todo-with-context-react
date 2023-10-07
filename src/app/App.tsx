@@ -1,5 +1,5 @@
-import { useCallback, useState } from "react";
-import { TodoType } from "../types";
+import { useCallback, useEffect, useState } from "react";
+import { TodoObjectType, TodoType } from "../types";
 import { TodoProvider } from "../context";
 import { v4 as uuidv4 } from "uuid";
 import { TodoPage } from "./pages";
@@ -63,6 +63,24 @@ const App = () => {
     },
     [todos, setTodos]
   );
+
+  const fetchTodosLocally = () => {
+    const fetchedTodos: TodoObjectType = JSON.parse(
+      localStorage.getItem("todos") as string
+    );
+    if (fetchedTodos && fetchedTodos.todos.length > 0)
+      setTodos(fetchedTodos.todos as Array<TodoType>);
+  };
+
+  const setTodosLocally = useCallback(() => {
+    localStorage.setItem("todos", JSON.stringify({ todos: todos }));
+  }, [todos, setTodos]);
+
+  // only run once while the component is rendered
+  useEffect(fetchTodosLocally, []);
+
+  // run everytime todos array is changed
+  useEffect(setTodosLocally, [todos]);
 
   return (
     <TodoProvider
