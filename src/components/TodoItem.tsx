@@ -34,11 +34,14 @@ function TodoItem({ todo }: { todo: TodoType }) {
         value={todoMessage}
         onChange={(e) => setTodoMessage(e.target.value)}
         readOnly={!isTodoEditable}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") editTodo();
+        }}
       />
       {/* Edit, Save Button */}
       <button
         className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-black/10 bg-gray-50 text-sm hover:bg-gray-100 disabled:opacity-50"
-        type="submit"
+        type="button"
         onClick={() => {
           if (todo.isCompleted) return;
 
@@ -52,6 +55,7 @@ function TodoItem({ todo }: { todo: TodoType }) {
       </button>
       {/* Delete Todo Button */}
       <button
+        type="button"
         className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-black/10 bg-gray-50 text-sm hover:bg-gray-100"
         onClick={() => deleteTodo(todo.id)}
       >
