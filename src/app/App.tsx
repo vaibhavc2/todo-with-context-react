@@ -61,6 +61,12 @@ const App = () => {
     [todos, setTodos]
   );
 
+  const deleteCompletedTodos = useCallback(() => {
+    setDeletedTodos(todos);
+    setTodos((prev) => prev.filter((todo) => todo.isCompleted === false));
+    setIsDeleted(true);
+  }, [todos, setTodos, deletedTodos, setDeletedTodos]);
+
   const fetchTodosLocally = () => {
     const fetchedTodos: TodoObjectType = JSON.parse(
       localStorage.getItem("todos") as string
@@ -85,6 +91,7 @@ const App = () => {
         todos,
         isDeleted,
         setIsDeleted,
+        deleteCompletedTodos,
         undoDeletedTodo,
         addTodo,
         updateTodo,
