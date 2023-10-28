@@ -1,19 +1,23 @@
 import { useCallback, useEffect, useState } from "react";
-import { TodoObjectType, TodoType } from "../types";
-import { TodoProvider } from "../context";
-import { v4 as uuidv4 } from "uuid";
-import { TodoPage } from "./pages";
 import UndoDelete from "../components/UndoDelete";
+import { TodoProvider } from "../context";
+import { TodoObjectType, TodoType } from "../types";
+import { TodoPage } from "./pages";
 
 const App = () => {
   const [todos, setTodos] = useState<Array<TodoType>>([]);
   const [deletedTodos, setDeletedTodos] = useState<Array<TodoType>>([]);
   const [isDeleted, setIsDeleted] = useState<boolean>(false);
+  const [completedTodos, setCompletedTodos] = useState<Array<TodoType>>([]);
 
   const addTodo = useCallback(
     (todoMessage: string) => {
       const latestTodo: TodoType = {
-        id: uuidv4(),
+        id: String(
+          Date.now().toString() +
+            todoMessage.toLowerCase() +
+            todoMessage.length.toString()
+        ),
         todoMessage,
         isCompleted: false
       };
@@ -21,7 +25,7 @@ const App = () => {
         return [latestTodo, ...prev];
       });
     },
-    [todos, setTodos, uuidv4]
+    [todos, setTodos]
   );
 
   const updateTodo = useCallback(
@@ -57,8 +61,12 @@ const App = () => {
           todo.id === id ? { ...todo, isCompleted: !todo.isCompleted } : todo
         )
       );
+      setCompletedTodos(() =>
+        todos.filter((todo) => todo.isCompleted === true)
+      );
+      console.log(completedTodos);
     },
-    [todos, setTodos]
+    [todos, setTodos, completedTodos, setCompletedTodos]
   );
 
   const deleteCompletedTodos = useCallback(() => {
@@ -71,8 +79,12 @@ const App = () => {
     const fetchedTodos: TodoObjectType = JSON.parse(
       localStorage.getItem("todos") as string
     );
-    if (fetchedTodos && fetchedTodos.todos.length > 0)
+    if (fetchedTodos && fetchedTodos.todos.length > 0) {
       setTodos(fetchedTodos.todos as Array<TodoType>);
+      setCompletedTodos(
+        fetchedTodos.todos.filter((todo) => todo.isCompleted === true)
+      );
+    }
   };
 
   const setTodosLocally = useCallback(() => {
@@ -93,6 +105,7 @@ const App = () => {
         setIsDeleted,
         deleteCompletedTodos,
         undoDeletedTodo,
+        completedTodos,
         addTodo,
         updateTodo,
         deleteTodo,
